@@ -1,6 +1,7 @@
 const express = require('express');
-var bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const auth = require('../middleware/auth')
 require('dotenv').config()
 const router = express.Router();
 
@@ -12,17 +13,23 @@ const User = require('../models/User')
  * @access  Private
  */
 
-router.get('/users', async (req, res) => {
+router.get('/users', auth, async (req, res) => {
     try {
         const users = await User.find();
-        if (!users) throw Error('No users exist');
+        if (!users) res.status(400).json({ msg: 'No existen usuarios' })
         res.json(users);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
 });
 
-router.post('/users', async (req, res) => {
+/**
+ * @route   POST api/users
+ * @desc    Create a new user
+ * @access  Private
+ */
+
+router.post('/users', auth, async (req, res) => {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
@@ -38,15 +45,15 @@ router.post('/users', async (req, res) => {
             password
         })
 
-        var salt = bcrypt.genSaltSync(10);
+        const salt = bcrypt.genSaltSync(10);
         if (!salt) return res.status(400).json({ msg: 'Error bcrypt salt' })
 
-        var hash = bcrypt.hashSync(newUser.password, salt);
+        const hash = bcrypt.hashSync(newUser.password, salt);
         if (!hash) return res.status(400).json({ msg: 'Error bcrypt hash' })
 
         newUser.password = hash
 
-        var token = jwt.sign(
+        const token = jwt.sign(
             { mongoURI: process.env.MONGO_URI },
             process.env.STRING_SECRET,
             { expiresIn: '1h' }
@@ -64,5 +71,30 @@ router.post('/users', async (req, res) => {
         })
     })
 })
+
+/**
+ * @route   GET api/user
+ * @desc    Get a user
+ * @access  Private
+ */
+
+router.get('/user', auth, async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const user = await User.findOne({ email });
+        if (!user) return res.status(400).json({ msg: 'Usuario no existe' })
+        
+        res.status(200).json({
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email
+            }
+        });
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+});
 
 module.exports = router;

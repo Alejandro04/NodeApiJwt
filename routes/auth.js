@@ -1,7 +1,7 @@
 const express = require('express');
-var bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
-var auth = require('../middleware/auth')
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const auth = require('../middleware/auth')
 require('dotenv').config()
 const router = express.Router();
 
@@ -17,13 +17,11 @@ const User = require('../models/User')
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
-    // Simple validation
     if (!email || !password) {
         return res.status(400).json({ msg: 'Por favor ingrese todos los campos' })
     }
 
     try {
-        // Check for existing user
         const user = await User.findOne({ email });
         if (!user) return res.status(400).json({ msg: 'Usuario no existe' })
 
@@ -59,7 +57,6 @@ router.post('/login', async (req, res) => {
 router.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
 
-    // Simple validation
     if (!name || !email || !password) {
         return res.status(400).json({ msg: 'Por favor ingrese todos los campos' })
     }

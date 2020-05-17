@@ -1,9 +1,18 @@
 const express = require('express');
+const auth = require('../middleware/auth')
 const router = express.Router();
 
 const Client = require('../models/Client')
 
-router.get('/clients', async (req, res) => {
+
+/**
+ * @route   GET api/clients
+ * @desc    Get all clients
+ * @access  Private
+ */
+
+
+router.get('/clients', auth, async (req, res) => {
 
     try {
         const clients = await Client.find()
@@ -16,7 +25,13 @@ router.get('/clients', async (req, res) => {
     }
 })
 
-router.post('/clients', async (req, res) => {
+/**
+ * @route   POST api/clients
+ * @desc    Create a new client
+ * @access  Private
+ */
+
+router.post('/clients', auth, async (req, res) => {
     const { name, description } = req.body;
     const errors = [];
     if (!name) {
@@ -49,8 +64,13 @@ router.post('/clients', async (req, res) => {
     }
 })
 
+/**
+ * @route   GET api/clients/:id
+ * @desc    show client
+ * @access  Private
+ */
 
-router.get('/clients/:id', async (req, res) => {
+router.get('/clients/:id', auth, async (req, res) => {
 
     try {
         const client = await Client.findById(req.params.id)
@@ -63,8 +83,13 @@ router.get('/clients/:id', async (req, res) => {
     }
 })
 
+/**
+ * @route   PUT api/clients/:id
+ * @desc    Update client
+ * @access  Private
+ */
 
-router.put('/clients/:id', async (req, res) => {
+router.put('/clients/:id', auth, async (req, res) => {
     const { name, description } = req.body;
 
     try {
@@ -78,7 +103,14 @@ router.put('/clients/:id', async (req, res) => {
     }
 });
 
-router.delete('/clients/:id', async (req, res) => {
+
+/**
+ * @route   DELETE api/clients/:id
+ * @desc    Delete client
+ * @access  Private
+ */
+
+router.delete('/clients/:id', auth, async (req, res) => {
     const id = req.params.id
 
     try {
