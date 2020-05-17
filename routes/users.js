@@ -39,7 +39,11 @@ router.post('/users', async (req, res) => {
         })
 
         var salt = bcrypt.genSaltSync(10);
+        if (!salt) return res.status(400).json({ msg: 'Error bcrypt salt' })
+
         var hash = bcrypt.hashSync(newUser.password, salt);
+        if (!hash) return res.status(400).json({ msg: 'Error bcrypt hash' })
+
         newUser.password = hash
 
         var token = jwt.sign(
