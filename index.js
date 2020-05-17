@@ -13,6 +13,7 @@ app.use(cors())
 
 // Routes
 app.use(require('./routes/clients'));
+app.use(require('./routes/users'));
 
 // Server is listenning
 app.listen(app.get('port'), () => {
