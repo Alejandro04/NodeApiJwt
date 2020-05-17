@@ -1,5 +1,7 @@
 const express = require('express');
 var bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
+require('dotenv').config()
 const router = express.Router();
 
 const User = require('../models/User')
@@ -22,13 +24,13 @@ router.get('/users', async (req, res) => {
 
 router.post('/users', async (req, res) => {
     const { name, email, password } = req.body;
-    
-    if(!name || !email || !password){
-        return res.status(400).json({msg: 'Por favor ingrese todos los campos'})
+
+    if (!name || !email || !password) {
+        return res.status(400).json({ msg: 'Por favor ingrese todos los campos' })
     }
 
     User.findOne({ email }).then(user => {
-        if(user) return res.status(400).json('El usuario ya existe')
+        if (user) return res.status(400).json('El usuario ya existe')
 
         const newUser = new User({
             name,
@@ -38,10 +40,17 @@ router.post('/users', async (req, res) => {
 
         var salt = bcrypt.genSaltSync(10);
         var hash = bcrypt.hashSync(newUser.password, salt);
-
         newUser.password = hash
+
+        var token = jwt.sign(
+            { mongoURI: process.env.MONGO_URI },
+            process.env.STRING_SECRET,
+            { expiresIn: '1h' }
+        );
+
         newUser.save().then(user => {
             res.json({
+                token,
                 user: {
                     id: user.id,
                     name: user.name,
