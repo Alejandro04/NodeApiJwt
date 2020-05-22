@@ -14,7 +14,7 @@ const User = require('../models/User')
  * @access  Public
  */
 
-router.post('/login', async (req, res) => {
+router.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -54,7 +54,7 @@ router.post('/login', async (req, res) => {
  * @access  Public
  */
 
-router.post('/register', async (req, res) => {
+router.post('/api/register', async (req, res) => {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {

@@ -78,19 +78,18 @@ router.post('/users', auth, async (req, res) => {
  * @access  Private
  */
 
-router.get('/user', auth, async (req, res) => {
+router.post('/api/auth/user', auth, async (req, res) => {
     try {
         const { email } = req.body;
 
         const user = await User.findOne({ email });
         if (!user) return res.status(400).json({ msg: 'Usuario no existe' })
-        
+
         res.status(200).json({
-            user: {
-                id: user.id,
-                name: user.name,
-                email: user.email
-            }
+            id: user.id,
+            name: user.name,
+            email: user.email
+
         });
     } catch (e) {
         res.status(400).json({ msg: e.message });
