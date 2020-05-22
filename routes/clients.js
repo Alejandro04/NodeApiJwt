@@ -12,7 +12,7 @@ const Client = require('../models/Client')
  */
 
 
-router.get('/api/clients', async (req, res) => {
+router.get('/api/clients', auth, async (req, res) => {
 
     try {
         const clients = await Client.find()
@@ -31,7 +31,7 @@ router.get('/api/clients', async (req, res) => {
  * @access  Private
  */
 
-router.post('/api/clients', async (req, res) => {
+router.post('/api/clients', auth, async (req, res) => {
     const { name, description } = req.body;
     const errors = [];
     if (!name) {
@@ -110,7 +110,7 @@ router.put('/clients/:id', auth, async (req, res) => {
  * @access  Private
  */
 
-router.delete('/api/clients/:id', async (req, res) => {
+router.delete('/api/clients/:id', auth, async (req, res) => {
     const id = req.params.id
 
     try {
