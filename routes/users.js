@@ -13,7 +13,7 @@ const User = require('../models/User')
  * @access  Private
  */
 
-router.get('/api/users', async (req, res) => {
+router.get('/api/users', auth, async (req, res) => {
     try {
         const users = await User.find();
         if (!users) res.status(400).json({ msg: 'No existen usuarios' })
@@ -78,7 +78,7 @@ router.post('/api/users', auth, async (req, res) => {
  * @access  Private
  */
 
-router.post('/api/user', async (req, res) => {
+router.post('/api/user', auth, async (req, res) => {
     try {
         const { email } = req.body;
 

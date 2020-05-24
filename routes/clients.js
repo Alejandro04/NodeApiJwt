@@ -12,7 +12,7 @@ const Client = require('../models/Client')
  */
 
 
-router.get('/api/clients', async (req, res) => {
+router.get('/api/clients', auth, async (req, res) => {
 
     try {
         const clients = await Client.find()
