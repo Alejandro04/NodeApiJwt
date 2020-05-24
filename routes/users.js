@@ -13,7 +13,7 @@ const User = require('../models/User')
  * @access  Private
  */
 
-router.get('/users', auth, async (req, res) => {
+router.get('/api/users', async (req, res) => {
     try {
         const users = await User.find();
         if (!users) res.status(400).json({ msg: 'No existen usuarios' })
@@ -29,7 +29,7 @@ router.get('/users', auth, async (req, res) => {
  * @access  Private
  */
 
-router.post('/users', auth, async (req, res) => {
+router.post('/api/users', auth, async (req, res) => {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
@@ -78,7 +78,7 @@ router.post('/users', auth, async (req, res) => {
  * @access  Private
  */
 
-router.post('/api/auth/user', auth, async (req, res) => {
+router.post('/api/user', async (req, res) => {
     try {
         const { email } = req.body;
 
@@ -93,6 +93,24 @@ router.post('/api/auth/user', auth, async (req, res) => {
         });
     } catch (e) {
         res.status(400).json({ msg: e.message });
+    }
+});
+
+/**
+ * @route   DELETE api/users/:id
+ * @desc    Delete user
+ * @access  Private
+ */
+
+router.delete('/api/users/:id', auth, async (req, res) => {
+    const id = req.params.id
+
+    try {
+        const users = await User.findByIdAndRemove(id)
+        res.json({ success: true })
+
+    } catch (error) {
+        res.status(404).json({ success: false })
     }
 });
 

@@ -12,7 +12,7 @@ const Client = require('../models/Client')
  */
 
 
-router.get('/api/clients', auth, async (req, res) => {
+router.get('/api/clients', async (req, res) => {
 
     try {
         const clients = await Client.find()
@@ -89,12 +89,16 @@ router.get('/clients/:id', auth, async (req, res) => {
  * @access  Private
  */
 
-router.put('/clients/:id', auth, async (req, res) => {
+router.patch('/api/clients/:id', auth, async (req, res) => {
     const { name, description } = req.body;
 
     try {
-        const client = await Client.findByIdAndUpdate(req.params.id, { name, description });
-        res.json(client);
+        await Client.findByIdAndUpdate(req.params.id, { name, description });
+        const clientUpdated = await Client.findById(req.params.id)
+
+        res.json({
+            client: clientUpdated
+        });
 
     } catch (error) {
         res.json({
