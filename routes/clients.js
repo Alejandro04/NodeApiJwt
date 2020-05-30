@@ -13,7 +13,6 @@ const Client = require('../models/Client')
 
 
 router.get('/api/clients', auth, async (req, res) => {
-
     try {
         const clients = await Client.find()
         res.json(clients);
@@ -125,5 +124,37 @@ router.delete('/api/clients/:id', auth, async (req, res) => {
         res.status(404).json({ success: false })
     }
 });
+
+/**
+ * @route SEARCH api/clients?search=data
+ * @desc Search clients
+ * @acces private
+*/
+
+router.get('/api/clients/:data', auth, async (req, res) => {
+    let data = req.params.data
+
+    // return filter
+    if (data !== undefined) {
+        //filter like
+        Client.find({'name' : new RegExp(data, 'i')}, function(err, clients){
+            if (err) return handleError(err);
+
+            res.json(clients);
+        });
+    } else {
+        // return all
+        try {
+            const clients = await Client.find()
+            res.json(clients);
+
+        } catch (error) {
+            res.json({
+                error: error
+            });
+        }
+    }
+});
+
 
 module.exports = router;
