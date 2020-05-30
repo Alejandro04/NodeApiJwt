@@ -114,4 +114,35 @@ router.delete('/api/users/:id', auth, async (req, res) => {
     }
 });
 
+/**
+ * @route SEARCH /api/users/:data
+ * @desc Search users
+ * @acces private
+*/
+
+router.get('/api/users/:data', auth, async (req, res) => {
+    let data = req.params.data
+
+    // return filter
+    if (data !== undefined) {
+        //filter like
+        User.find({'name' : new RegExp(data, 'i')}, function(err, users){
+            if (err) return handleError(err);
+
+            res.json(users);
+        });
+    } else {
+        // return all
+        try {
+            const users = await User.find()
+            res.json(users);
+
+        } catch (error) {
+            res.json({
+                error: error
+            });
+        }
+    }
+});
+
 module.exports = router;
