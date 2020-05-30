@@ -126,7 +126,7 @@ router.delete('/api/clients/:id', auth, async (req, res) => {
 });
 
 /**
- * @route SEARCH api/clients?search=data
+ * @route SEARCH api/clients/:data
  * @desc Search clients
  * @acces private
 */
